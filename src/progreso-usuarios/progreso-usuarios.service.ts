@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProgresoUsuarioDto } from './dto/create-progreso-usuario.dto';
-import { UpdateProgresoUsuarioDto } from './dto/update-progreso-usuario.dto';
+import { ProgresoDto } from './dto/ProgresoDto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ProgresoUsuariosService {
-  create(createProgresoUsuarioDto: CreateProgresoUsuarioDto) {
-    return 'This action adds a new progresoUsuario';
-  }
+  constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all progresoUsuarios`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} progresoUsuario`;
+  async GetProgressUserById(id: number, startDate: Date, endDate: Date) {
+    return this.prisma.progreso.findMany({
+      where: {
+        id_usuario: id,
+        fecha: {
+          gte: startDate,
+          lte: endDate
+        }
+      }
+    });
   }
+  
 
-  update(id: number, updateProgresoUsuarioDto: UpdateProgresoUsuarioDto) {
-    return `This action updates a #${id} progresoUsuario`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} progresoUsuario`;
+  async CreateProgressUser(progreso: ProgresoDto) {
+    return this.prisma.progreso.create({
+      data: progreso
+    });
   }
 }

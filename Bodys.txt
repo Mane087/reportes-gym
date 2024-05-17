@@ -1,0 +1,26 @@
+USUARIOS Y ENTRENADORES
+
+{
+    "nombre": "Emmanuel",
+    "apellido": "Alaniz Mancilla"
+}
+
+PROGRESO USUARIO
+{
+    "id_usuario": 1,
+    "fecha": "2024-01-01",
+    "peso": 75,
+    "grasa_corporal": 28,
+    "musculo": 50
+}
+
+
+RUTINAS USUARIOS
+{
+    "id_usuario": 1,
+    "id_rutina": 1,
+    "id_entrenador": 1,
+    "fecha_inicio": "2024-01-01",
+    "fecha_fin": "2024-03-01",
+    "satisfaccion": 10
+}
