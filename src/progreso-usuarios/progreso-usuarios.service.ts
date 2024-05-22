@@ -15,6 +15,9 @@ export class ProgresoUsuariosService {
           gte: startDate,
           lte: endDate
         }
+      }, include:{
+        usuario: true
+        
       }
     });
   }
