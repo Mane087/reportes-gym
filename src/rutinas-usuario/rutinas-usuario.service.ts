@@ -8,19 +8,58 @@ export class RutinasUsuarioService {
 
   async createRutinaUsuario(rutina: RutinasUsuarioDto) {
     return this.prisma.rutinasUsuario.create({
-      data: rutina
+      data: rutina,
     });
   }
 
-  async GetRutinaUsuarioById(id: number, satisfaccionMin: number, satisfaccionMax: number) {
+  async GetRutinaUsuarioBySatisfaccion(id: number, satisfaccion: number) {
     return this.prisma.rutinasUsuario.findMany({
       where: {
         id_rutina: id,
-        satisfaccion: {
-          gte: satisfaccionMin,
-          lte: satisfaccionMax
-        }
-      }
+        satisfaccion: satisfaccion,
+      },
+      include: {
+        rutina: true,
+        usuario: true,
+        entrenador: true,
+      },
+    });
+  }
+
+  async GetRutinaUsuarioById(id: number) {
+    return this.prisma.rutinasUsuario.findMany({
+      where: {
+        id_rutina: id,
+      },
+      include: {
+        rutina: true,
+        usuario: true,
+        entrenador: true,
+      },
+    });
+  }
+
+  async GetRutinaUsuarioByDate(fecha_inicio: Date, fecha_fin: Date) {
+    return this.prisma.rutinasUsuario.findMany({
+      where: {
+        fecha_inicio: fecha_inicio,
+        fecha_fin: fecha_fin,
+      },
+      include: {
+        rutina: true,
+        usuario: true,
+        entrenador: true,
+      },
+    });
+  }
+
+  async getRutinaUsuarios() {
+    return this.prisma.rutinasUsuario.findMany({
+      include: {
+        rutina: true,
+        usuario: true,
+        entrenador: true,
+      },
     });
   }
 }

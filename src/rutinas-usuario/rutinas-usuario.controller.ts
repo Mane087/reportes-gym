@@ -23,16 +23,35 @@ export class RutinasUsuarioController {
     return this.rutinasUsuarioService.createRutinaUsuario(rutinaUsuario);
   }
 
-  @Get('/:id')
-  GetRutinaUsuarioById(
+  @Get()
+  getRutinaUsuarios() {
+    return this.rutinasUsuarioService.getRutinaUsuarios();
+  }
+
+  @Get('rutinaBySatisfaccion/:id')
+  GetRutinaUsuarioBySatisdfaccion(
     @Param('id', ParseIntPipe) id: number,
-    @Query('satisfaccion-min', ParseIntPipe) satisfaccionMin: number,
-    @Query('satisfaccion-max', ParseIntPipe) satisfaccionMax: number,
+    @Query('satisfaccion', ParseIntPipe) satisfaccion: number,
   ) {
-    return this.rutinasUsuarioService.GetRutinaUsuarioById(
+    return this.rutinasUsuarioService.GetRutinaUsuarioBySatisfaccion(
       id,
-      satisfaccionMin,
-      satisfaccionMax,
+      satisfaccion,
     );
+  }
+
+  @Get('rutinaById/:id')
+  GetRutinaUsuarioById(@Param('id', ParseIntPipe) id: number) {
+    return this.rutinasUsuarioService.GetRutinaUsuarioById(id);
+  }
+
+  @Get('rutinaByDate')
+  GetRutinaUsuarioByDate(
+    @Query('fecha_inicio') fecha_inicio: string,
+    @Query('fecha_fin') fecha_fin: string,
+  ) {
+    const start = new Date(fecha_inicio);
+    const end = new Date(fecha_fin);
+    console.log('data de fecha', start, end);
+    return this.rutinasUsuarioService.GetRutinaUsuarioByDate(start, end);
   }
 }
