@@ -14,68 +14,88 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario Int       @id @default(autoincrement())
-  nombre     String
-  apellido   String
+  id_usuario      Int              @id @default(autoincrement())
+  nombre          String
+  apellido        String
+  id_sucursal     Int?
   RutinasUsuarios RutinasUsuario[]
-  Progresos Progreso[]
+  Progresos       Progreso[]
+  sucursal        Sucursal?        @relation(fields: [id_sucursal], references: [id_sucursal])
 }
 
 model Entrenador {
-  id_entrenador Int           @id @default(autoincrement())
-  nombre        String
-  apellido      String
-  RutinasUsuarios RutinasUsuario[]
+  id_entrenador          Int                      @id @default(autoincrement())
+  nombre                 String
+  apellido               String
+  RutinasUsuarios        RutinasUsuario[]
+  sucursales             Sucursal[]               @relation("EntrenadorSucursal")
+  EntrenadoresSucursales EntrenadoresSucursales[]
 }
 
 model Rutina {
-  id_rutina   Int    @id @default(autoincrement())
-  nombre      String
-  RutinasUsuarios RutinasUsuario[]
+  id_rutina        Int                @id @default(autoincrement())
+  nombre           String
+  RutinasUsuarios  RutinasUsuario[]
   RutinasEjercicio RutinasEjercicio[]
 }
 
 model Progreso {
-  id_progreso    Int     @id @default(autoincrement())
+  id_progreso    Int      @id @default(autoincrement())
   id_usuario     Int
   fecha          DateTime
   peso           Float
   grasa_corporal Float
   musculo        Float
-  usuario        Usuario @relation(fields: [id_usuario], references: [id_usuario])
+  usuario        Usuario  @relation(fields: [id_usuario], references: [id_usuario])
 }
 
 model RutinasUsuario {
-  id_rutinas_usuarios Int         @id @default(autoincrement())
+  id_rutinas_usuarios Int        @id @default(autoincrement())
   id_usuario          Int
   id_rutina           Int
   id_entrenador       Int
   fecha_inicio        DateTime
   fecha_fin           DateTime?
   satisfaccion        Float?
-  usuario             Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  rutina              Rutina      @relation(fields: [id_rutina], references: [id_rutina])
-  entrenador          Entrenador  @relation(fields: [id_entrenador], references: [id_entrenador])
+  usuario             Usuario    @relation(fields: [id_usuario], references: [id_usuario])
+  rutina              Rutina     @relation(fields: [id_rutina], references: [id_rutina])
+  entrenador          Entrenador @relation(fields: [id_entrenador], references: [id_entrenador])
 }
 
-
 model RutinasEjercicio {
-  id_rutinas_ejercicios Int     @id @default(autoincrement())
-  id_rutina            Int
-  id_ejercicio         Int
-  id_equipo            Int
-  repeticiones         Int
-  series               Int
-  descanso             Int
-  duracion             Int
-  fecha                DateTime
-  rutina               Rutina    @relation(fields: [id_rutina], references: [id_rutina])
+  id_rutinas_ejercicios Int      @id @default(autoincrement())
+  id_rutina             Int
+  id_ejercicio          Int
+  id_equipo             Int
+  repeticiones          Int
+  series                Int
+  descanso              Int
+  duracion              Int
+  fecha                 DateTime
+  rutina                Rutina   @relation(fields: [id_rutina], references: [id_rutina])
 }
 
 model Equipo {
-  id_equipo  Int                @id @default(autoincrement())
-  nombre     String
-  descripcion String
-  estado     String
+  id_equipo    Int      @id @default(autoincrement())
+  nombre       String
+  descripcion  String
+  estado       String
   fecha_compra DateTime
+}
+
+model Sucursal {
+  id_sucursal            Int                      @id @default(autoincrement())
+  nombre                 String
+  direccion              String
+  entrenadores           Entrenador[]             @relation("EntrenadorSucursal")
+  usuarios               Usuario[]
+  EntrenadoresSucursales EntrenadoresSucursales[]
+}
+
+model EntrenadoresSucursales {
+  id            Int        @id @default(autoincrement())
+  id_entrenador Int
+  id_sucursal   Int
+  entrenador    Entrenador @relation(fields: [id_entrenador], references: [id_entrenador])
+  sucursal      Sucursal   @relation(fields: [id_sucursal], references: [id_sucursal])
 }

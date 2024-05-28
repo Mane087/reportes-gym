@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class UsuariosDto {
   @IsNotEmpty()
@@ -8,4 +8,8 @@ export class UsuariosDto {
   @IsNotEmpty()
   @IsString()
   apellido: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  id_sucursal: number;
 }
