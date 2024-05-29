@@ -55,23 +55,14 @@ export class RutinasUsuarioController {
     return this.rutinasUsuarioService.GetRutinaUsuarioByDate(start, end);
   }
 
-    // el conteo esta mal
+  // el conteo esta mal
   @Get('date/:periodo')
   async getClientesPorRutinaYEntrenadorMesActual(
     @Param('periodo', ParseIntPipe) periodo: number,
   ) {
-    let groupedData;
-    if (periodo === 1) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
-    } else if (periodo === 2) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
-    } else {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorRutinaYEntrenadorMesActual();
-    }
-
+    const groupedData =  await this.rutinasUsuarioService.getClientes(periodo);
+    console.log('groupedData', groupedData);
+    
     const result = {};
 
     for (const item of groupedData) {
@@ -121,21 +112,7 @@ export class RutinasUsuarioController {
     @Param('id', ParseIntPipe) id: number,
     @Query('periodo', ParseIntPipe) periodo: number,
   ) {
-    let groupedData;
-    if (periodo == 1) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMesesWithIdTrainer(
-          id,
-        );
-    } else if (periodo == 2) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMesesWithIdTrainer(
-          id,
-        ); // Ajuste para obtener datos anuales
-    } else {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorRutinaYEntrenadorMesActual(); // Ajuste para obtener datos del mes actual
-    }
+    const groupedData = await this.rutinasUsuarioService.getClientesPorEntrenador(id,periodo);
 
     const result = {};
 
@@ -178,62 +155,62 @@ export class RutinasUsuarioController {
   }
 
   // devuelve a todos los entrenadores y el conteo esta mal
-  @Get('sucursal/:id')
-  async getClientesPorSucursal(
-    @Param('id', ParseIntPipe) id: number,
-    @Query('periodo', ParseIntPipe) periodo: number,
-  ) {
-    let groupedData;
-    if (periodo === 1) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
-    } else if (periodo === 2) {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
-    } else {
-      groupedData =
-        await this.rutinasUsuarioService.getClientesPorRutinaYEntrenadorMesActual();
-    }
+  // @Get('sucursal/:id')
+  // async getClientesPorSucursal(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Query('periodo', ParseIntPipe) periodo: number,
+  // ) {
+  //   let groupedData;
+  //   if (periodo === 1) {
+  //     groupedData =
+  //       await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
+  //   } else if (periodo === 2) {
+  //     groupedData =
+  //       await this.rutinasUsuarioService.getClientesPorEntrenadorYSucursalUltimosSeisMeses();
+  //   } else {
+  //     groupedData =
+  //       await this.rutinasUsuarioService.getClientesPorRutinaYEntrenadorMesActual();
+  //   }
 
-    const result = {};
+  //   const result = {};
 
-    for (const item of groupedData) {
-      const entrenador = await this.rutinasUsuarioService.getEntrenadorById(
-        item.id_entrenador,
-      );
+  //   for (const item of groupedData) {
+  //     const entrenador = await this.rutinasUsuarioService.getEntrenadorById(
+  //       item.id_entrenador,
+  //     );
 
-      const sucursalNombre = (
-        await this.rutinasUsuarioService.getSucursalById(id)
-      ).nombre;
+  //     const sucursalNombre = (
+  //       await this.rutinasUsuarioService.getSucursalById(id)
+  //     ).nombre;
 
-      if (!result[sucursalNombre]) {
-        result[sucursalNombre] = {};
-      }
+  //     if (!result[sucursalNombre]) {
+  //       result[sucursalNombre] = {};
+  //     }
 
-      if (!result[sucursalNombre][entrenador.id_entrenador]) {
-        result[sucursalNombre][entrenador.id_entrenador] = {
-          entrenador: {
-            id: entrenador.id_entrenador,
-            nombre: entrenador.nombre,
-            apellido: entrenador.apellido,
-          },
-          count: 0,
-        };
-      }
+  //     if (!result[sucursalNombre][entrenador.id_entrenador]) {
+  //       result[sucursalNombre][entrenador.id_entrenador] = {
+  //         entrenador: {
+  //           id: entrenador.id_entrenador,
+  //           nombre: entrenador.nombre,
+  //           apellido: entrenador.apellido,
+  //         },
+  //         count: 0,
+  //       };
+  //     }
 
-      result[sucursalNombre][entrenador.id_entrenador].count +=
-        item._count.id_usuario;
-    }
+  //     result[sucursalNombre][entrenador.id_entrenador].count +=
+  //       item._count.id_usuario;
+  //   }
 
-    const formattedResult = Object.entries(result).map(
-      ([sucursal, entrenadores]) => {
-        return {
-          sucursal,
-          entrenadores: Object.values(entrenadores),
-        };
-      },
-    );
+  //   const formattedResult = Object.entries(result).map(
+  //     ([sucursal, entrenadores]) => {
+  //       return {
+  //         sucursal,
+  //         entrenadores: Object.values(entrenadores),
+  //       };
+  //     },
+  //   );
 
-    return formattedResult;
-  }
+  //   return formattedResult;
+  // }
 }

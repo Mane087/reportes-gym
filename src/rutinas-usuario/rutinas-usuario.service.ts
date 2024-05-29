@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RutinasUsuarioDto } from './dto/RutinasUsuarioDto';
 import { PrismaService } from 'src/prisma.service';
-import { log } from 'console';
 
 @Injectable()
 export class RutinasUsuarioService {
@@ -64,56 +63,43 @@ export class RutinasUsuarioService {
     });
   }
 
-  async getClientesPorRutinaYEntrenadorMesActual() {
+  async getClientes(periodo: number) {
     const currentDate = new Date();
-    const startOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1,
-    );
-    const endOfMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0,
-    );
+    let startOfPeriod: Date, endOfPeriod: Date;
 
-    // Formatear las fechas para que solo incluyan la parte de la fecha (sin la parte de la hora)
-    const formattedStartOfMonth = startOfMonth.toISOString().split('T')[0];
-    const formattedEndOfMonth = endOfMonth.toISOString().split('T')[0];
-
-    console.log('startOfMonth', formattedStartOfMonth);
-    console.log('endOfMonth', formattedEndOfMonth);
+    if (periodo === 1) {
+      // Anual
+      startOfPeriod = new Date(currentDate.getFullYear(), 0, 1);
+      endOfPeriod = new Date(currentDate.getFullYear(), 11, 31);
+    } else if (periodo === 2) {
+      // Semestral
+      startOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 5,
+        1,
+      );
+      endOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
+    } else {
+      // Mensual
+      startOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1,
+      );
+      endOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
+    }
 
     const groupedData = await this.prisma.rutinasUsuario.groupBy({
       by: ['id_usuario', 'id_entrenador'],
       where: {
-        fecha_inicio: new Date(formattedStartOfMonth),
-        fecha_fin: new Date(formattedEndOfMonth),
-      },
-      _count: {
-        id_usuario: true,
-      },
-    });
-
-    return groupedData;
-  }
-
-  async getClientesPorEntrenadorYSucursalUltimosSeisMeses() {
-    const currentDate = new Date();
-    const startOfPeriod = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() - 6,
-      1,
-    );
-    const endOfPeriod = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0,
-    );
-
-    const groupedData = await this.prisma.rutinasUsuario.groupBy({
-      by: ['id_entrenador', 'id_usuario'],
-      where: {
         fecha_inicio: {
           gte: startOfPeriod,
           lte: endOfPeriod,
@@ -127,49 +113,49 @@ export class RutinasUsuarioService {
     return groupedData;
   }
 
-  async getClientesPorEntrenadorYSucursalAnual() {
+  async getClientesPorEntrenador(id: number, periodo: number) {
     const currentDate = new Date();
-    const startOfYear = new Date(currentDate.getFullYear(), 0, 1); // 1 de enero del año actual
-    const endOfYear = new Date(currentDate.getFullYear(), 11, 31); // 31 de diciembre del año actual
+    let startOfPeriod, endOfPeriod;
+    if (periodo === 1) {
+      startOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 6,
+        1,
+      );
+      endOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
+    } else if (periodo === 2) {
+      startOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 6,
+        1,
+      );
+      endOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
+    } else {
+      startOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1,
+      );
+      endOfPeriod = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0,
+      );
+    }
 
     const groupedData = await this.prisma.rutinasUsuario.groupBy({
       by: ['id_entrenador', 'id_usuario'],
       where: {
-        fecha_inicio: {
-          gte: startOfYear,
-          lte: endOfYear,
-        },
-      },
-      _count: {
-        id_usuario: true,
-      },
-    });
-
-    return groupedData;
-  }
-
-  async getClientesPorEntrenadorYSucursalUltimosSeisMesesWithIdTrainer(
-    id: number,
-  ) {
-    const currentDate = new Date();
-    const startOfPeriod = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() - 6,
-      1,
-    );
-    const endOfPeriod = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0,
-    );
-
-    const groupedData = await this.prisma.rutinasUsuario.groupBy({
-      by: ['id_entrenador', 'id_usuario'],
-      where: {
-        fecha_inicio: {
-          gte: startOfPeriod,
-          lte: endOfPeriod,
-        },
+        fecha_inicio: startOfPeriod,
+        fecha_fin: endOfPeriod,
         id_entrenador: id,
       },
       _count: {
