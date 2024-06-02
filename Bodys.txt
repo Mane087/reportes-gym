@@ -28,3 +28,12 @@ RUTINAS USUARIOS
 {
     "nombre": Pecho alto
 }
+
+ENTRENAMIENTOS
+{
+    "id_usuario": 1,
+    "id_entrenador": 1,
+    "id_sucursal": 1,
+    "fecha_inicio": "2024-01-01",
+    "fecha_fin": "2024-05-31"
+}

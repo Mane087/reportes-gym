@@ -21,6 +21,7 @@ model Usuario {
   RutinasUsuarios RutinasUsuario[]
   Progresos       Progreso[]
   sucursal        Sucursal?        @relation(fields: [id_sucursal], references: [id_sucursal])
+  Entrenamientos  Entrenamientos[]
 }
 
 model Entrenador {
@@ -30,6 +31,7 @@ model Entrenador {
   RutinasUsuarios        RutinasUsuario[]
   sucursales             Sucursal[]               @relation("EntrenadorSucursal")
   EntrenadoresSucursales EntrenadoresSucursales[]
+  Entrenamientos         Entrenamientos[]
 }
 
 model Rutina {
@@ -90,6 +92,7 @@ model Sucursal {
   entrenadores           Entrenador[]             @relation("EntrenadorSucursal")
   usuarios               Usuario[]
   EntrenadoresSucursales EntrenadoresSucursales[]
+  Entrenamientos         Entrenamientos[]
 }
 
 model EntrenadoresSucursales {
@@ -98,4 +101,16 @@ model EntrenadoresSucursales {
   id_sucursal   Int
   entrenador    Entrenador @relation(fields: [id_entrenador], references: [id_entrenador])
   sucursal      Sucursal   @relation(fields: [id_sucursal], references: [id_sucursal])
+}
+
+model Entrenamientos {
+  id_entrenamiento Int      @id @default(autoincrement())
+  id_usuario       Int
+  id_entrenador    Int
+  id_sucursal      Int
+  fecha_inicio     DateTime
+  fecha_fin        DateTime?
+  usuario          Usuario    @relation(fields: [id_usuario], references: [id_usuario])
+  entrenador       Entrenador @relation(fields: [id_entrenador], references: [id_entrenador])
+  sucursal         Sucursal   @relation(fields: [id_sucursal], references: [id_sucursal])
 }

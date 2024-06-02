@@ -11,5 +11,14 @@ export class UsuarioService {
       data: usuario
     });
   }
+
+  async findAll() {
+    return this.prisma.usuario.groupBy({
+      by: ['id_sucursal'],
+      _count: {
+        id_usuario: true,
+      },
+    });
+  }
  
 }

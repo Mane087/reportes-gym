@@ -13,4 +13,9 @@ export class UsuarioController {
     return this.usuarioService.createUsuario(usuario);
   }
 
+  @Get()
+  findAll() {
+    return this.usuarioService.findAll();
+  }
+
 }

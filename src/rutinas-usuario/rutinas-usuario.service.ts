@@ -26,6 +26,7 @@ export class RutinasUsuarioService {
     });
   }
 
+
   async GetRutinaUsuarioById(id: number) {
     return this.prisma.rutinasUsuario.findMany({
       where: {
@@ -188,4 +189,6 @@ export class RutinasUsuarioService {
       },
     });
   }
+
+
 }
